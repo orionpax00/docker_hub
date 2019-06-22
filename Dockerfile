@@ -1,48 +1,79 @@
-FROM gcr.io/tensorflow/tensorflow:1.5.0-devel
-RUN apt-get update && apt-get install -y \
-  git \
-  nano \
-  vim \
-  wget
+FROM python:3.6-jessie
 
-# change to home dir
-WORKDIR ~/
+LABEL maintainer="Report Bee <www.reportbee.com>"
 
-# install the required libraries
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y locales
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-  DEBIAN_FRONTEND=noninteractive dpkg-reconfigure --frontend=noninteractive locales && \
-  update-locale LANG=en_US.UTF-8
 
-ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+RUN apt-get update
+# Pick up some TF dependencies
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y curl
+RUN apt-get install -y unzip
+RUN apt-get install -y build-essential
+RUN apt-get install -y libfreetype6-dev
+RUN apt-get install -y libhdf5-serial-dev
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y libzmq3-dev
+RUN apt-get install -y pkg-config
+RUN apt-get install -y vim
+RUN apt-get install wget
+RUN apt-get -y install python3-pip
 
-RUN apt-get install -y protobuf-compiler \
-  python-pil \
-  python-lxml \
-  python-tk
+#OPENCV dependencies
+# https://stackoverflow.com/questions/47113029/importerror-libsm-so-6-cannot-open-shared-object-file-no-such-file-or-directo
+RUN apt-get install -y libsm6 libxext6
+RUN apt-get install -y libfontconfig1 libxrender1
 
-RUN pip install \
-  pillow \
-  jupyter \
-  matplotlib
+RUN pip3 install Pillow
+RUN pip3 install h5py
+RUN pip3 install ipykernel
+RUN pip3 install jupyter
+RUN pip3 install matplotlib
+#Fix numpy to 1.13.3
+RUN pip3 install numpy==1.13.3
+RUN pip3 install pandas
+RUN pip3 install scipy
+RUN pip3 install sklearn
+RUN pip3 install keras
+RUN pip3 install opencv-python
+RUN pip3 install scikit-image
+RUN pip3 install tensorflow==1.7.0
+RUN python3 -m ipykernel.kernelspec
 
-# change to tensorflow dir
-WORKDIR /tensorflow
+# For Jupyter notebook
+EXPOSE 8888
+#For TensorBoard
+EXPOSE 6006
 
-# clone the models repo
+WORKDIR ~/app
+
+#Setup Tensorflow object detection
 RUN git clone https://github.com/tensorflow/models.git
-WORKDIR models
-WORKDIR research
-RUN protoc object_detection/protos/*.proto --python_out=.
-RUN echo "export PYTHONPATH=${PYTHONPATH}:`pwd`:`pwd`/slim" >> ~/.bashrc
-RUN python setup.py install
 
-# Test the installation - https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
-# once you are done building/pulling the image.
-#RUN bazel build tensorflow/python/tools:freeze_graph
-#RUN python object_detection/builders/model_builder_test.py
+# RUN apt-get install -y protobuf-compiler
+RUN pip3 install Cython
+RUN pip3 install lxml
 
-#config for my files
+# https://github.com/tensorflow/models/issues/4002
+# Installing Protobuf
+RUN curl -OL https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip
+RUN unzip protoc-3.2.0-linux-x86_64.zip -d protoc3
+RUN mv protoc3/bin/* /usr/local/bin/
+RUN mv protoc3/include/* /usr/local/include/
+RUN rm protoc-3.2.0-linux-x86_64.zip
+RUN rm -rf protoc3
+
+# RUN cd models/research
+# RUN protoc ./models/research/object_detection/protos/*.proto --python_out=.
+RUN cd models/research && protoc ./object_detection/protos/*.proto --python_out=.
+
+# # From tensorflow/models/research/
+RUN echo 'export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim' >> ~/.bashrc
+
+RUN jupyter notebook --generate-config
+
+COPY ./app/jupyter-notebook-config.py /root/.jupyter/jupyter_notebook_config.py
+
+ENV PASSWORD reportbee
 
 WORKDIR /
 
@@ -50,5 +81,4 @@ RUN mkdir lead_detection
 
 RUN wget --quiet --no-check-certificate https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip && unzip 0.0.1.zip
 
-
-CMD ["echo", "Running tensorflow docker"]
+CMD ["jupyter", "notebook", "--allow-root"]
