@@ -1,8 +1,5 @@
 FROM python:3.6-jessie
 
-LABEL maintainer="Report Bee <www.reportbee.com>"
-
-
 RUN apt-get update
 # Pick up some TF dependencies
 RUN apt-get install -y software-properties-common
@@ -39,11 +36,6 @@ RUN pip3 install scikit-image
 RUN pip3 install tensorflow==1.7.0
 RUN python3 -m ipykernel.kernelspec
 
-# For Jupyter notebook
-EXPOSE 8888
-#For TensorBoard
-EXPOSE 6006
-
 WORKDIR ~/app
 
 #Setup Tensorflow object detection
@@ -55,6 +47,7 @@ RUN pip3 install lxml
 
 # https://github.com/tensorflow/models/issues/4002
 # Installing Protobuf
+
 RUN curl -OL https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip
 RUN unzip protoc-3.2.0-linux-x86_64.zip -d protoc3
 RUN mv protoc3/bin/* /usr/local/bin/
@@ -69,16 +62,14 @@ RUN cd models/research && protoc ./object_detection/protos/*.proto --python_out=
 # # From tensorflow/models/research/
 RUN echo 'export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim' >> ~/.bashrc
 
-RUN jupyter notebook --generate-config
-
-COPY ./app/jupyter-notebook-config.py /root/.jupyter/jupyter_notebook_config.py
-
 ENV PASSWORD reportbee
 
 WORKDIR /
 
 RUN mkdir lead_detection
 
-RUN wget --quiet --no-check-certificate https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip && unzip 0.0.1.zip
+#RUN wget --quiet --no-check-certificate https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip && unzip 0.0.1.zip
 
-CMD ["jupyter", "notebook", "--allow-root"]
+Expose 8889
+
+CMD ["bash", "-c","jupyter notebook --allow-root --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password='' --port=8889"]
