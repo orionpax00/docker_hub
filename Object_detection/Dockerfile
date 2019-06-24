@@ -57,7 +57,9 @@ RUN echo 'export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim' >> ~/.bashrc
 
 RUN mkdir lead_detection
 RUN cd lead_detection
-RUN curl -OL https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip
+RUN wget https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip
+RUN unzip 0.0.1.zip
+RUN rm -rf 0.0.1.zip
 
 EXPOSE 8889
 
