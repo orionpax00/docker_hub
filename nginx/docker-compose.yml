@@ -1,1 +1,9 @@
-#sjndjksbdjkb
+version: '2'
+
+services:
+  nginx_d:
+    build: .
+    restart: always
+    ports:
+      - "80:80"
+    container_name: docker_nginx
