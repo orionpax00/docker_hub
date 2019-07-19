@@ -1,4 +1,4 @@
 FROM nginx:1.17
-
-COPY data /usr/share/nginx/html
-COPY conf.d /etc/nginx/conf.d
+RUN rm /etc/nginx/conf.d/default.conf
+ADD sites-available /etc/nginx/sites-available
+COPY nginx.conf /etc/nginx
