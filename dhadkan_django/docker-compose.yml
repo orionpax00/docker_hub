@@ -20,5 +20,5 @@ services:
     environment:
      - NGINX_HOST=dkuamr22132.com
      - NGINX_PORT=80
-    command: /bin/bash -c "envsubst /etc/nginx/site-available/default && exec nginx -g 'daemon off;'"
+    # command: /bin/bash -c "envsubst /etc/nginx/site-available/default && exec nginx -g 'daemon off;'"
     container_name: docker_nginx
