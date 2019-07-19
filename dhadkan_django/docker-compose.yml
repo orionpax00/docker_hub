@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  django_dhadkan:
+    build: .
+    container_name: django_dhadkan
+    command: bash -c "python dhadkan_v3_backend-0.0.2/manage.py makemigrations && python dhadkan_v3_backend-0.0.2/manage.py migrate && python dhadkan_v3_backend-0.0.2/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - nginx_d
+
+  nginx_d:
+    build: ../nginx/
+    restart: always
+    volumes:
+      - ../nginx/data:/usr/share/nginx/html/
+    ports:
+      - "80:80"
+    environment:
+     - NGINX_HOST=dkumar123.iitr.ac.in
+     - NGINX_PORT=80
+    # command: /bin/bash -c "envsubst /etc/nginx/site-available/default && exec nginx -g 'daemon off;'"
+    container_name: docker_nginx
