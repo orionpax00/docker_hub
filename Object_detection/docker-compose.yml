@@ -3,7 +3,12 @@ version: '3'
 services:
   od:
     build: .
-    command: bash -c "jupyter notebook --allow-root --ip=0.0.0.0 --port=8889"
     container_name: object_detection
+    volumes:
+      - ./data:/~/models/research/object_detection/mydata
+      - ./training:/~/models/research/object_detection/training
+      - ./test_images:/~/models/research/object_detection/test_images
+      - ./lead_location_detect.ipynb:/~/models/research/object_detection/object_detection.ipynb
     ports:
       - '8889:8889'
+    command: bash -c "jupyter notebook --allow-root --NotebookApp.token='' --NotebookApp.password='' --ip=0.0.0.0 --port=8889"

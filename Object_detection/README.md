@@ -19,3 +19,7 @@ Copy both files
 ```sh
 docker-compose up
 ```
+
+### Things to be noted
+
+copy frozen_inference_graph.pb from drive(durgesh123.iitr@gmail.com) to data folder
