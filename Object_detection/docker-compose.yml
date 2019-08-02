@@ -7,7 +7,6 @@ services:
     volumes:
       - ./data:/~/models/research/object_detection/mydata
       - ./training:/~/models/research/object_detection/training
-      - ./test_images:/~/models/research/object_detection/test_images
       - ./lead_location_detect.ipynb:/~/models/research/object_detection/object_detection.ipynb
     ports:
       - '8889:8889'
