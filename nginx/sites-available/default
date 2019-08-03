@@ -1,12 +1,12 @@
 server {
-	listen 50 default_server;
-	listen [::]:50 default_server;
+	listen 80 default_server;
+	listen [::]:80 default_server;
 
 	root /var/www/html;
 
 	index index.php index.html index.htm index.nginx-debian.html;
 
-	server_name dkumar123.iitr.ac.in;
+	server_name mycompany.com;
 
 	location / {
 			root   /usr/share/nginx/html;
@@ -17,9 +17,4 @@ server {
 	location = /50x.html {
 			root   /usr/share/nginx/html;
 	}
-
-	location /dhadkan {
-		proxy_pass http://127.0.0.1:8000;
-	}
-
 }
