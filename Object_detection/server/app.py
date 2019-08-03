@@ -2,11 +2,7 @@ from flask import Flask,request
 import os
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-  return "I'm Batman"
-
-@app.route('/classify', methods=['GET','POST'])
+@app.route('/', methods=['GET','POST'])
 def say_hello():
   if request.method == 'POST':
     print("i'm here")
