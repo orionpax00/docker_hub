@@ -33,6 +33,8 @@ RUN pip3 install scikit-image
 RUN pip3 install tensorflow==1.13.1
 RUN python3 -m ipykernel.kernelspec
 
+
+
 WORKDIR ~/
 
 
@@ -55,6 +57,9 @@ RUN cd models/research && protoc ./object_detection/protos/*.proto --python_out=
 
 RUN echo 'export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim' >> ~/.bashrc
 
+RUN pip3 install flask
+
+
 #RUN mkdir lead_detection
 #RUN cd lead_detection
 #RUN wget https://github.com/orionpax00/ecg_lead_detection/archive/0.0.1.zip
@@ -62,5 +67,4 @@ RUN echo 'export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim' >> ~/.bashrc
 #RUN rm -rf 0.0.1.zip
 
 EXPOSE 8889
-
-CMD ["cd /~/models/research/object_detection/"]
+WORKDIR /~/models/research/
