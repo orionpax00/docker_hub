@@ -1,0 +1,11 @@
+# The Docker image to run your workspace in. Defaults to gitpod/workspace-full
+image: 
+  file: .gitpod.Dockerfile
+# Command to start on workspace startup (optional)
+tasks:
+  - init: cd /workspace/react-native-pod/AwesomeProject && npm install 
+    command: cd /workspace/react-native-pod/AwesomeProject && react-native run-android
+# Ports to expose on workspace startup (optional)
+ports:
+  - port: 8081
+    onOpen: open-preview
