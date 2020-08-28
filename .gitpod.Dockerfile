@@ -2,9 +2,9 @@ FROM gitpod/workspace-full
 
 USER gitpod
 
-RUN apt-get -q update && \
-    apt-get install -yq bastet && \
-    rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get -q update && \
+    sudo apt-get install -yq bastet vim && \
+    sudo rm -rf /var/lib/apt/lists/*
 
 
 
